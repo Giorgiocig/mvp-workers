@@ -7,6 +7,7 @@ import ChatInterface from "@/app/components/ChatInterface";
 import {
   Conversation,
   createConversation,
+  deleteConversation,
   getConversations,
 } from "../actions/conversation";
 
@@ -50,6 +51,31 @@ export default function WorkerDashboard({ user }: { user: User }) {
       setActiveConversation(result.conversationId);
     }
     setIsCreating(false);
+  };
+
+  const handleDeleteConversation = async (
+    conversationId: string,
+    e: React.MouseEvent,
+  ) => {
+    e.stopPropagation(); // Prevent selecting the conversation
+
+    if (!confirm("Sei sicuro di voler eliminare questa conversazione?")) {
+      return;
+    }
+
+    const result = await deleteConversation(conversationId);
+
+    if (result.success) {
+      // If we deleted the active conversation, clear it
+      if (activeConversation === conversationId) {
+        setActiveConversation(null);
+        setMessages([]);
+      }
+      // Reload conversations list
+      await loadConversations();
+    } else {
+      alert(result.error || "Errore durante l'eliminazione");
+    }
   };
 
   useEffect(() => {
@@ -99,22 +125,35 @@ export default function WorkerDashboard({ user }: { user: User }) {
               </div>
             ) : (
               conversations.map((conv) => (
-                <button
+                <div
                   key={conv.id}
-                  onClick={() => setActiveConversation(conv.id)}
-                  className={`w-full text-left px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors ${
+                  className={`relative group flex items-center border-b border-gray-100 hover:bg-gray-50 transition-colors ${
                     activeConversation === conv.id
                       ? "bg-blue-50 border-l-4 border-l-blue-500"
                       : ""
                   }`}
                 >
-                  <div className="font-medium text-gray-900 truncate">
-                    {conv.title}
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    {new Date(conv.updated_at).toLocaleDateString("it-IT")}
-                  </div>
-                </button>
+                  <button
+                    onClick={() => setActiveConversation(conv.id)}
+                    className="flex-1 text-left px-4 py-3"
+                  >
+                    <div className="font-medium text-gray-900 truncate pr-8">
+                      {conv.title}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {new Date(conv.updated_at).toLocaleDateString("it-IT")}
+                    </div>
+                  </button>
+
+                  {/* Delete Button */}
+                  <button
+                    onClick={(e) => handleDeleteConversation(conv.id, e)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
+                    title="Elimina conversazione"
+                  >
+                    🗑️
+                  </button>
+                </div>
               ))
             )}
           </div>
@@ -132,6 +171,7 @@ export default function WorkerDashboard({ user }: { user: User }) {
                 key={activeConversation}
                 conversationId={activeConversation}
                 initialMessages={messages}
+                onTitleGenerated={loadConversations}
               />
             )
           ) : (
