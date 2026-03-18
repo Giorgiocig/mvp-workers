@@ -4,15 +4,18 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, UIMessage } from "ai";
 
 import { useState } from "react";
+import { generateConversationTitle } from "../actions/ai";
 
 export default function ChatInterface({
   conversationId,
   initialMessages,
+  onTitleGenerated,
 }: any) {
   const [input, setInput] = useState("");
+  const [hasGeneratedTitle, setHasGeneratedTitle] = useState(false);
 
   const { messages, sendMessage, status, error, stop } = useChat({
-    messages: initialMessages.map((msg: any) => ({
+    messages: (initialMessages ?? []).map((msg: any) => ({
       id: msg.id,
       role: msg.role,
       parts: msg.parts,
@@ -29,13 +32,25 @@ export default function ChatInterface({
     }),
   });
 
-  console.log("messages in useChat:", messages);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  // Handle form submit
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    sendMessage({ text: input });
+    if (!input.trim()) return;
+
+    const userMessage = input;
+    const isFirstMessage = messages.length === 0;
     setInput("");
+
+    if (isFirstMessage && !hasGeneratedTitle) {
+      setHasGeneratedTitle(true);
+      generateConversationTitle(conversationId, userMessage)
+        .then(() => onTitleGenerated())
+        .catch((err) => console.error("Failed to generate title:", err));
+    }
+
+    sendMessage({ text: userMessage });
   };
+
   return (
     <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
       {error && <div className="text-red-500 mb-4">{error.message}</div>}
