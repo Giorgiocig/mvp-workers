@@ -1,0 +1,2 @@
+ALTER TABLE messages ADD COLUMN parts JSONB;
+ALTER TABLE messages ALTER COLUMN content DROP NOT NULL;
