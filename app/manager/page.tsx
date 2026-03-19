@@ -1,10 +1,10 @@
 import { requireAuth } from "@/app/actions/requireAuth";
 import { redirect } from "next/navigation";
 import ManagerDashboard from "@/app/components/ManagerDashboard";
+import { requireManager } from "@/lib/guards";
 
 export default async function ManagerPage() {
-  const user = await requireAuth();
-  if (user.role !== "manager") redirect(`/worker/${user.id}`);
+  await requireManager();
 
   return <ManagerDashboard />;
 }
