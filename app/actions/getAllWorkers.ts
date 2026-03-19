@@ -1,16 +1,9 @@
 "use server";
+import { userRepository } from "@/lib/repositories/userRepository";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { User } from "@/lib/utilities/interfaces";
 
 
-export async function getAllWorkers(): Promise<User[]> {
-  const supabase = await createSupabaseServerClient();
-
-  const { data: workers } = await supabase
-    .from("users")
-    .select("id, name, role")
-    .eq("role", "worker")
-    .order("name");
-
-  return (workers as User[]) || [];
+export async function getAllWorkers() {
+ return await userRepository.findAllWorkers()
 }

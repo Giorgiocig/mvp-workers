@@ -1,4 +1,5 @@
 "use server";
+import { userRepository } from "@/lib/repositories/userRepository";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 
 export async function loginManager(password: string) {
@@ -12,13 +13,7 @@ export async function loginManager(password: string) {
   if (error) {
     return { success: false, error: "Password non valida" };
   }
-
-  // Get user role from database
-  const { data: userData } = await supabase
-    .from("users")
-    .select("role")
-    .eq("id", data.user.id)
-    .single();
+  const userData=await userRepository.findById(data.user.id)
 
   if (!userData || userData.role !== "manager") {
     await supabase.auth.signOut();

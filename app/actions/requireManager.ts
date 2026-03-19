@@ -1,6 +1,8 @@
 "use server";
+
+import { User } from "@/lib/utilities/interfaces";
 import { requireAuth } from "./requireAuth";
-import { User } from "./auth";
+
 import { redirect } from "next/navigation";
 
 export async function requireManager(): Promise<User> {

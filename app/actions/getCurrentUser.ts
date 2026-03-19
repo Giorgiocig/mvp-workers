@@ -1,7 +1,7 @@
 "use server";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
+import { User } from "@/lib/utilities/interfaces";
 import { cookies } from "next/headers";
-import { User } from "./auth";
 
 export async function getCurrentUser(): Promise<User | null> {
   const supabase = await createSupabaseServerClient();
@@ -11,9 +11,7 @@ export async function getCurrentUser(): Promise<User | null> {
   const workerSession = cookieStore.get("user_session")?.value;
   if (workerSession) {
     try {
-      const session = JSON.parse(workerSession);
-      console.log("[DEBUG] Worker session found:", session);
-
+      const session = JSON.parse(workerSession)
       // Validate session has required fields
       if (session.userId && session.name && session.role) {
         return {
@@ -23,7 +21,7 @@ export async function getCurrentUser(): Promise<User | null> {
         } as User;
       }
     } catch (error) {
-      console.error("[DEBUG] Failed to parse worker session:", error);
+      console.error("Failed to parse worker session:", error);
     }
   }
 
@@ -32,19 +30,14 @@ export async function getCurrentUser(): Promise<User | null> {
     data: { user: authUser },
   } = await supabase.auth.getUser();
   if (!authUser) {
-    console.log("[DEBUG] No auth user found");
     return null;
   }
-
-  console.log("[DEBUG] Auth user found:", authUser.id);
 
   const { data: user } = await supabase
     .from("users")
     .select("id, name, role")
     .eq("id", authUser.id)
     .single();
-
-  console.log("[DEBUG] User from DB:", user);
 
   return user as User | null;
 }
