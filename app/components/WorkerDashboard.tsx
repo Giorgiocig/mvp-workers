@@ -4,14 +4,12 @@ import { useState, useEffect } from "react";
 
 import { getMessages, type Message } from "@/app/actions/messages";
 import ChatInterface from "@/app/components/ChatInterface";
-import {
-  Conversation,
-  createConversation,
-  deleteConversation,
-  getConversations,
-} from "../actions/conversation";
 
-import { User } from "@/lib/utilities/interfaces";
+
+import { Conversation, User } from "@/lib/utilities/interfaces";
+import { getConversations } from "../actions/getConversations";
+import { createConversation } from "../actions/createConversation";
+import { deleteConversation } from "../actions/deleteConversation";
 
 export default function WorkerDashboard({ user }: { user: User }) {
   const [conversations, setConversations] = useState<Conversation[]>([]);

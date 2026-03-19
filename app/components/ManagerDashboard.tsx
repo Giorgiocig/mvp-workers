@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  getWorkers,
-  getWorkerConversations,
-  Conversation,
-} from "../actions/conversation";
-import { getMessages, type Message } from "../actions/messages";
+import { getMessages } from "../actions/messages";
 import { DashboardMessage } from "@/lib/utilities/types";
+import { Conversation } from "@/lib/utilities/interfaces";
+import { getWorkerConversations } from "../actions/getConversationForSpecificUser";
+import { getAllWorkers } from "../actions/getAllWorkers";
+
 
 
 export default function ManagerDashboard() {
@@ -26,7 +25,7 @@ export default function ManagerDashboard() {
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
 
   useEffect(() => {
-    getWorkers().then((data) => {
+    getAllWorkers().then((data) => {
       setWorkers(data);
       setIsLoadingWorkers(false);
     });

@@ -1,6 +1,7 @@
 "use server";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
-import { User } from "./auth";
+import { User } from "@/lib/utilities/interfaces";
+
 
 export async function getAllWorkers(): Promise<User[]> {
   const supabase = await createSupabaseServerClient();

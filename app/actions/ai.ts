@@ -4,7 +4,8 @@ import { openai } from "@ai-sdk/openai";
 import { generateText } from "ai";
 
 import { requireAuth } from "./requireAuth";
-import { updateConversationTitle } from "./conversation";
+import { updateConversationTitle } from "./updateConversationTitle";
+
 
 /**
  * Generate a conversation title based on the first user message

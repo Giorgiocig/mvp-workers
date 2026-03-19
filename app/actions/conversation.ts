@@ -4,19 +4,13 @@ import { createSupabaseServerClient } from "@/lib/supabaseServer";
 
 import { revalidatePath } from "next/cache";
 import { requireAuth } from "./requireAuth";
+import { Conversation } from "@/lib/utilities/interfaces";
 
-export type Conversation = {
-  id: string;
-  user_id: string;
-  title: string;
-  created_at: string;
-  updated_at: string;
-};
 
 /**
  * Get all conversations for current user
  */
-export async function getConversations(): Promise<Conversation[]> {
+/* export async function getConversations(): Promise<Conversation[]> {
   const user = await requireAuth();
   const supabase = await createSupabaseServerClient();
 
@@ -32,12 +26,12 @@ export async function getConversations(): Promise<Conversation[]> {
   }
 
   return data as Conversation[];
-}
+} */
 
 /**
  * Get a single conversation by ID
  */
-export async function getConversation(
+/* export async function getConversation(
   conversationId: string,
 ): Promise<Conversation | null> {
   const user = await requireAuth();
@@ -56,12 +50,12 @@ export async function getConversation(
   }
 
   return data as Conversation;
-}
+} */
 
 /**
  * Create a new conversation
  */
-export async function createConversation(
+/* export async function createConversation(
   title?: string,
 ): Promise<{ success: boolean; conversationId?: string; error?: string }> {
   const user = await requireAuth();
@@ -87,12 +81,12 @@ export async function createConversation(
   revalidatePath(`/worker/${user.id}`);
 
   return { success: true, conversationId: data.id };
-}
+} */
 
 /**
  * Update conversation title
  */
-export async function updateConversationTitle(
+/* export async function updateConversationTitle(
   conversationId: string,
   title: string,
 ): Promise<{ success: boolean; error?: string }> {
@@ -113,12 +107,12 @@ export async function updateConversationTitle(
   revalidatePath(`/worker/${user.id}`);
 
   return { success: true };
-}
+} */
 
 /**
  * Delete a conversation
  */
-export async function deleteConversation(
+/* export async function deleteConversation(
   conversationId: string,
 ): Promise<{ success: boolean; error?: string }> {
   const user = await requireAuth();
@@ -138,12 +132,12 @@ export async function deleteConversation(
   revalidatePath(`/worker/${user.id}`);
 
   return { success: true };
-}
+} */
 
 /**
  * Get all conversations for a specific worker (for manager view)
  */
-export async function getWorkerConversations(
+/* export async function getWorkerConversations(
   workerId: string,
 ): Promise<Conversation[]> {
   await requireAuth(); // Manager auth check will be in the page component
@@ -161,12 +155,12 @@ export async function getWorkerConversations(
   }
 
   return data as Conversation[];
-}
+} */
 
 /**
  * Get all workers (for manager view)
  */
-export async function getWorkers(): Promise<{ id: string; name: string }[]> {
+/* export async function getWorkers(): Promise<{ id: string; name: string }[]> {
   const user = await requireAuth();
   if (user.role !== "manager") return [];
 
@@ -182,4 +176,4 @@ export async function getWorkers(): Promise<{ id: string; name: string }[]> {
   }
 
   return data;
-}
+} */
