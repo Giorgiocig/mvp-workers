@@ -162,3 +162,24 @@ export async function getWorkerConversations(
 
   return data as Conversation[];
 }
+
+/**
+ * Get all workers (for manager view)
+ */
+export async function getWorkers(): Promise<{ id: string; name: string }[]> {
+  const user = await requireAuth();
+  if (user.role !== "manager") return [];
+
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("users")
+    .select("id, name")
+    .eq("role", "worker");
+
+  if (error) {
+    console.error("Error fetching workers:", error);
+    return [];
+  }
+
+  return data;
+}
