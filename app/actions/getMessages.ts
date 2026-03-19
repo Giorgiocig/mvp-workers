@@ -1,37 +1,15 @@
 "use server";
 
-import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { requireAuth } from "./requireAuth";
-import { Message } from "@/lib/utilities/interfaces";
+import { conversationRepository } from "@/lib/repositories/conversationRepository";
+import { messageRepository } from "@/lib/repositories/messageRepository";
 
-export async function getMessages(conversationId: string): Promise<Message[]> {
+export async function getMessages(conversationId: string) {
   const user = await requireAuth();
-  const supabase = await createSupabaseServerClient();
 
-  // Verify user owns this conversation
-  const { data: conversation } = await supabase
-    .from("conversations")
-    .select("user_id")
-    .eq("id", conversationId)
-    .single();
+  const conversation = await conversationRepository.findById(conversationId);
+  if (!conversation) return [];
+  if (conversation.user_id !== user.id && user.role !== "manager") return [];
 
-  if (!conversation || conversation.user_id !== user.id) {
-    // Manager can view all conversations
-    if (user.role !== "manager") {
-      return [];
-    }
-  }
-
-  const { data, error } = await supabase
-    .from("messages")
-    .select("*")
-    .eq("conversation_id", conversationId)
-    .order("created_at", { ascending: true });
-
-  if (error) {
-    console.error("Error fetching messages:", error);
-    return [];
-  }
-
-  return data as Message[];
+  return messageRepository.findByConversationId(conversationId);
 }
