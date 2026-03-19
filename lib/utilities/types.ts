@@ -1,4 +1,5 @@
-import { Message } from "@/app/actions/messages";
+import { Message } from "./interfaces";
+
 
 export type UserRole = "worker" | "manager";
 

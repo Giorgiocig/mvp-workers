@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from "react";
 
-import { getMessages, type Message } from "@/app/actions/messages";
 import ChatInterface from "@/app/components/ChatInterface";
 
 
-import { Conversation, User } from "@/lib/utilities/interfaces";
+import { Conversation, Message, User } from "@/lib/utilities/interfaces";
 import { getConversations } from "../actions/getConversations";
 import { createConversation } from "../actions/createConversation";
 import { deleteConversation } from "../actions/deleteConversation";
+import { getMessages } from "../actions/getMessages";
 
 export default function WorkerDashboard({ user }: { user: User }) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -36,7 +36,6 @@ export default function WorkerDashboard({ user }: { user: User }) {
   const loadMessages = async (conversationId: string) => {
     setIsLoadingMessages(true);
     const data = await getMessages(conversationId);
-    console.log("messaggi caricati dal DB:", data);
     setMessages(data);
     setIsLoadingMessages(false);
   };
