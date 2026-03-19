@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { HardHat, MessageSquare, Plus, Trash2 } from "lucide-react";
 
 import ChatInterface from "@/app/components/ChatInterface";
 
@@ -86,47 +87,55 @@ export default function WorkerDashboard({ user }: { user: User }) {
   }, [activeConversation]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">👷 {user.name}</h1>
-            <p className="text-sm text-gray-500">Worker Dashboard</p>
-          </div>
-        </div>
-      </header>
-
+    <div className="min-h-[calc(100vh-4rem)] flex flex-col">
       {/* Main Content */}
-      <div className="flex-1 flex max-w-7xl mx-auto w-full">
-        <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
-          <div className="p-4 border-b">
+      <div className="flex-1 flex max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 gap-4">
+        <div className="w-80 surface rounded-2xl overflow-hidden flex flex-col">
+          <div className="p-4 border-b border-white/10">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <h1 className="text-lg font-semibold text-slate-100 flex items-center gap-2 truncate">
+                  <HardHat className="h-5 w-5 text-amber-400" aria-hidden="true" />
+                  {user.name}
+                </h1>
+                <p className="text-xs text-slate-400">Worker Dashboard</p>
+              </div>
+              <div className="h-9 w-9 rounded-xl surface-strong flex items-center justify-center">
+                <HardHat className="h-4 w-4 text-slate-200" aria-hidden="true" />
+              </div>
+            </div>
+          </div>
+
+          <div className="p-4 border-b border-white/10">
             <button
               onClick={handleCreateConversation}
               disabled={isCreating}
-              className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition-colors disabled:opacity-50"
+              className="w-full px-4 py-3 rounded-xl font-semibold transition-colors disabled:opacity-50 bg-amber-500/20 hover:bg-amber-500/30 text-slate-100 border border-amber-400/20"
             >
-              {isCreating ? "Creazione..." : "➕ Nuova Conversazione"}
+              <span className="inline-flex items-center justify-center gap-2">
+                <Plus className="h-4 w-4 text-amber-300" aria-hidden="true" />
+                {isCreating ? "Creazione..." : "Nuova Conversazione"}
+              </span>
             </button>
           </div>
 
           <div className="flex-1 overflow-y-auto">
             {isLoadingConversations ? (
-              <div className="p-4 text-center text-gray-400">
+              <div className="p-4 text-center text-slate-400">
                 Caricamento...
               </div>
             ) : conversations.length === 0 ? (
-              <div className="p-4 text-center text-gray-400">
-                <p className="text-sm">Nessuna conversazione</p>
-                <p className="text-xs mt-1">Crea la tua prima chat!</p>
+              <div className="p-4 text-center text-slate-400">
+                <p className="text-sm text-slate-300">Nessuna conversazione</p>
+                <p className="text-xs mt-1">Crea la tua prima chat</p>
               </div>
             ) : (
               conversations.map((conv) => (
                 <div
                   key={conv.id}
-                  className={`relative group flex items-center border-b border-gray-100 hover:bg-gray-50 transition-colors ${
+                  className={`relative group flex items-center border-b border-white/10 hover:bg-white/10 transition-colors ${
                     activeConversation === conv.id
-                      ? "bg-blue-50 border-l-4 border-l-blue-500"
+                      ? "bg-white/10 border-l-4 border-l-amber-400"
                       : ""
                   }`}
                 >
@@ -134,10 +143,10 @@ export default function WorkerDashboard({ user }: { user: User }) {
                     onClick={() => setActiveConversation(conv.id)}
                     className="flex-1 text-left px-4 py-3"
                   >
-                    <div className="font-medium text-gray-900 truncate pr-8">
+                    <div className="font-medium text-slate-100 truncate pr-8">
                       {conv.title}
                     </div>
-                    <div className="text-xs text-gray-500 mt-1">
+                    <div className="text-xs text-slate-400 mt-1">
                       {new Date(conv.updated_at).toLocaleDateString("it-IT")}
                     </div>
                   </button>
@@ -145,10 +154,10 @@ export default function WorkerDashboard({ user }: { user: User }) {
                   {/* Delete Button */}
                   <button
                     onClick={(e) => handleDeleteConversation(conv.id, e)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
                     title="Elimina conversazione"
                   >
-                    🗑️
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
                   </button>
                 </div>
               ))
@@ -157,11 +166,11 @@ export default function WorkerDashboard({ user }: { user: User }) {
         </div>
 
         {/* Chat Area */}
-        <div className="flex-1 flex flex-col bg-gray-50">
+        <div className="flex-1 surface rounded-2xl overflow-hidden flex flex-col">
           {activeConversation ? (
             isLoadingMessages ? (
-              <div className="flex-1 flex items-center justify-center text-gray-400">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-400" />
+              <div className="flex-1 flex items-center justify-center text-slate-400">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-amber-400" />
               </div>
             ) : (
               <ChatInterface
@@ -172,9 +181,12 @@ export default function WorkerDashboard({ user }: { user: User }) {
               />
             )
           ) : (
-            <div className="flex-1 flex items-center justify-center text-gray-400">
+            <div className="flex-1 flex items-center justify-center text-slate-400">
               <div className="text-center">
-                <p className="text-lg mb-2">💬 Nessuna chat selezionata</p>
+                <div className="flex items-center justify-center gap-2 text-slate-300 mb-2">
+                  <MessageSquare className="h-5 w-5 text-sky-400" aria-hidden="true" />
+                  <p className="text-lg text-slate-200">Nessuna chat selezionata</p>
+                </div>
                 <p className="text-sm">Seleziona o crea una conversazione</p>
               </div>
             </div>

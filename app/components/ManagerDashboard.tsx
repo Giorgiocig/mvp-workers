@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Factory, HardHat, MessageSquare, User } from "lucide-react";
 import { DashboardMessage } from "@/lib/utilities/types";
 import { Conversation } from "@/lib/utilities/interfaces";
 import { getWorkerConversations } from "../actions/getConversationForSpecificUser";
@@ -48,37 +49,34 @@ export default function ManagerDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <h1 className="text-xl font-bold text-gray-900">
-            🏭 Manager Dashboard
-          </h1>
-        </div>
-      </header>
-
-      <div className="flex-1 flex max-w-7xl mx-auto w-full">
+    <div className="min-h-[calc(100vh-4rem)] flex flex-col">
+      <div className="flex-1 flex max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 gap-4">
         {/* Colonna 1 - Workers */}
-        <div className="w-72 bg-white border-r border-gray-200 flex flex-col">
-          <div className="p-4 border-b">
-            <h2 className="font-semibold text-gray-700">👷 Workers</h2>
+        <div className="w-72 surface rounded-2xl overflow-hidden flex flex-col">
+          <div className="p-4 border-b border-white/10">
+            <h2 className="font-semibold text-slate-100 flex items-center gap-2">
+              <HardHat className="h-4 w-4 text-amber-400" aria-hidden="true" />
+              Workers
+            </h2>
           </div>
           <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
             {isLoadingWorkers ? (
-              <div className="text-center text-gray-400">Caricamento...</div>
+              <div className="text-center text-slate-400">Caricamento...</div>
             ) : (
               workers.map((worker) => (
                 <button
                   key={worker.id}
                   onClick={() => handleSelectWorker(worker)}
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
+                  className={`w-full p-4 rounded-xl border text-left transition-all surface hover:bg-white/10 ${
                     selectedWorker?.id === worker.id
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-gray-200 bg-white hover:border-blue-300 hover:bg-gray-50"
+                      ? "border-amber-400/60 bg-white/10"
+                      : "border-white/10"
                   }`}
                 >
-                  <div className="text-2xl mb-1">👤</div>
-                  <div className="font-semibold text-gray-900">
+                  <div className="mb-2">
+                    <User className="h-7 w-7 text-slate-300" aria-hidden="true" />
+                  </div>
+                  <div className="font-semibold text-slate-100">
                     {worker.name}
                   </div>
                 </button>
@@ -88,25 +86,26 @@ export default function ManagerDashboard() {
         </div>
 
         {/* Colonna 2 - Conversazioni del worker selezionato */}
-        <div className="w-72 bg-white border-r border-gray-200 flex flex-col">
-          <div className="p-4 border-b">
-            <h2 className="font-semibold text-gray-700">
+        <div className="w-72 surface rounded-2xl overflow-hidden flex flex-col">
+          <div className="p-4 border-b border-white/10">
+            <h2 className="font-semibold text-slate-100 flex items-center gap-2">
+              <Factory className="h-4 w-4 text-sky-400" aria-hidden="true" />
               {selectedWorker
-                ? `💬 Conversazioni di ${selectedWorker.name}`
-                : "💬 Conversazioni"}
+                ? `Conversazioni di ${selectedWorker.name}`
+                : "Conversazioni"}
             </h2>
           </div>
           <div className="flex-1 overflow-y-auto">
             {!selectedWorker ? (
-              <div className="p-4 text-center text-gray-400 text-sm">
+              <div className="p-4 text-center text-slate-400 text-sm">
                 Seleziona un worker
               </div>
             ) : isLoadingConversations ? (
-              <div className="p-4 text-center text-gray-400">
+              <div className="p-4 text-center text-slate-400">
                 Caricamento...
               </div>
             ) : conversations.length === 0 ? (
-              <div className="p-4 text-center text-gray-400 text-sm">
+              <div className="p-4 text-center text-slate-400 text-sm">
                 Nessuna conversazione
               </div>
             ) : (
@@ -114,16 +113,16 @@ export default function ManagerDashboard() {
                 <button
                   key={conv.id}
                   onClick={() => handleSelectConversation(conv.id)}
-                  className={`w-full text-left px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors ${
+                  className={`w-full text-left px-4 py-3 border-b border-white/10 hover:bg-white/10 transition-colors ${
                     selectedConversation === conv.id
-                      ? "bg-blue-50 border-l-4 border-l-blue-500"
+                      ? "bg-white/10 border-l-4 border-l-amber-400"
                       : ""
                   }`}
                 >
-                  <div className="font-medium text-gray-900 truncate">
+                  <div className="font-medium text-slate-100 truncate">
                     {conv.title}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">
+                  <div className="text-xs text-slate-400 mt-1">
                     {new Date(conv.updated_at).toLocaleDateString("it-IT")}
                   </div>
                 </button>
@@ -133,17 +132,20 @@ export default function ManagerDashboard() {
         </div>
 
         {/* Colonna 3 - Messaggi */}
-        <div className="flex-1 flex flex-col bg-gray-50">
+        <div className="flex-1 surface rounded-2xl overflow-hidden flex flex-col">
           {!selectedConversation ? (
-            <div className="flex-1 flex items-center justify-center text-gray-400">
+            <div className="flex-1 flex items-center justify-center text-slate-400">
               <div className="text-center">
-                <p className="text-lg mb-2">💬 Nessuna chat selezionata</p>
+                <div className="flex items-center justify-center gap-2 text-slate-300 mb-2">
+                  <MessageSquare className="h-5 w-5 text-sky-400" aria-hidden="true" />
+                  <p className="text-lg text-slate-200">Nessuna chat selezionata</p>
+                </div>
                 <p className="text-sm">Seleziona una conversazione</p>
               </div>
             </div>
           ) : isLoadingMessages ? (
             <div className="flex-1 flex items-center justify-center">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-400" />
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-amber-400" />
             </div>
           ) : (
             <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-4">
@@ -155,8 +157,8 @@ export default function ManagerDashboard() {
                   <div
                     className={`max-w-[70%] px-4 py-3 rounded-2xl text-sm ${
                       msg.role === "user"
-                        ? "bg-blue-500 text-white"
-                        : "bg-white text-gray-900 border border-gray-200"
+                        ? "bg-amber-500/20 text-slate-100 border border-amber-400/20"
+                        : "bg-white/5 text-slate-100 border border-white/10"
                     }`}
                   >
                     {/* gestisci sia parts (nuovo formato) che content (vecchio) */}
