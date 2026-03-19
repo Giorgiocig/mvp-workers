@@ -1,7 +1,10 @@
-import React from "react";
+import { requireAuth } from "@/app/actions/requireAuth";
+import { redirect } from "next/navigation";
+import ManagerDashboard from "@/app/components/ManagerDashboard";
 
-type Props = {};
+export default async function ManagerPage() {
+  const user = await requireAuth();
+  if (user.role !== "manager") redirect(`/worker/${user.id}`);
 
-export default function page({}: Props) {
-  return <div>Io sono manager</div>;
+  return <ManagerDashboard />;
 }
