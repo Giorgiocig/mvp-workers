@@ -121,7 +121,7 @@ export default function ChatInterface({
         {isBusy && (
           <div className="flex items-center gap-2 text-slate-400 text-sm">
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-sky-400" />
-            Sto pensando...
+            Thinking...
           </div>
         )}
       </div>
@@ -136,7 +136,7 @@ export default function ChatInterface({
             rows={1}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Scrivi un messaggio per l'assistente..."
+            placeholder="Write a message to the assistant..."
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
@@ -164,7 +164,7 @@ export default function ChatInterface({
               disabled={status !== "ready" || !input.trim()}
             >
               <Send className="mr-1 h-3 w-3" aria-hidden="true" />
-              Invia
+              Send
             </button>
           )}
         </div>

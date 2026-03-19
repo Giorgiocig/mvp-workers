@@ -7,7 +7,7 @@ export async function loginWorker(name: string) {
   const user = await userRepository.findByName(name);
 
   if (!user) {
-    return { success: false, error: "Worker non trovato" };
+    return { success: false, error: "Worker not found" };
   }
 
   const cookieStore = await cookies();

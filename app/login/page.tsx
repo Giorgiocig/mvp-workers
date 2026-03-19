@@ -36,7 +36,7 @@ export default function LoginPage() {
       router.push(`/worker/${result.workerId}`);
       router.refresh();
     } else {
-      setError(result.error || "Errore durante il login");
+      setError(result.error || "Error during login");
     }
 
     setLoading(false);
@@ -67,7 +67,7 @@ export default function LoginPage() {
           <h1 className="text-3xl font-bold text-slate-100 mb-2">
             Manufacturing App
           </h1>
-          <p className="text-slate-300">Sarajevo Production System</p>
+          <p className="text-slate-300">Roma Production System</p>
         </div>
 
         {/* Card */}
@@ -121,12 +121,12 @@ export default function LoginPage() {
             {activeTab === "worker" ? (
               <div className="space-y-3">
                 <p className="text-sm text-slate-300 mb-4 text-center">
-                  Seleziona il tuo nome per accedere
+                  Select your name to sign in
                 </p>
 
                 {workers.length === 0 ? (
                   <div className="text-center py-8 text-slate-400">
-                    Caricamento workers...
+                    Loading workers...
                   </div>
                 ) : (
                   workers.map((worker) => (
@@ -149,7 +149,7 @@ export default function LoginPage() {
                     htmlFor="password"
                     className="block text-sm font-medium text-slate-200 mb-2"
                   >
-                    Password Manager
+                    Manager password
                   </label>
                   <input
                     type="password"
@@ -170,7 +170,7 @@ export default function LoginPage() {
                 >
                   <span className="inline-flex items-center justify-center gap-2">
                     <LockKeyhole className="h-4 w-4" aria-hidden="true" />
-                    {loading ? "Caricamento..." : "Accedi come Manager"}
+                    {loading ? "Loading..." : "Sign in as manager"}
                   </span>
                 </button>
               </form>
@@ -180,7 +180,7 @@ export default function LoginPage() {
 
         {/* Footer */}
         <div className="mt-6 text-center text-sm text-slate-400">
-          <p>Sarajevo Manufacturing • {new Date().getFullYear()}</p>
+          <p>Roma Manufacturing • {new Date().getFullYear()}</p>
         </div>
       </div>
     </div>

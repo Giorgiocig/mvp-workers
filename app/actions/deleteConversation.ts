@@ -10,6 +10,6 @@ export async function deleteConversation(id: string) {
     revalidatePath(`/worker/${user.id}`);
     return { success: true };
   } catch (e) {
-    return { success: false, error: "Errore durante l'eliminazione" };
+    return { success: false, error: "Error while deleting the conversation" };
   }
 }

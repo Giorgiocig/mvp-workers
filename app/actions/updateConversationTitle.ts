@@ -11,6 +11,6 @@ export async function updateConversationTitle(id: string, title: string) {
     revalidatePath(`/worker/${user.id}`);
     return { success: true };
   } catch (e) {
-    return { success: false, error: "Errore durante l'aggiornamento" };
+    return { success: false, error: "Error while updating the title" };
   }
 }

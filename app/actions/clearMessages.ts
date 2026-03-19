@@ -9,13 +9,13 @@ export async function clearMessages(conversationId: string) {
 
   const conversation = await conversationRepository.findById(conversationId);
   if (!conversation || conversation.user_id !== user.id) {
-    return { success: false, error: "Conversazione non trovata" };
+    return { success: false, error: "Conversation not found" };
   }
 
   try {
     await messageRepository.deleteByConversationId(conversationId);
     return { success: true };
   } catch (e) {
-    return { success: false, error: "Errore durante la cancellazione" };
+    return { success: false, error: "Error while clearing messages" };
   }
 }

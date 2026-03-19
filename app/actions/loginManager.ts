@@ -11,13 +11,13 @@ export async function loginManager(password: string) {
   });
 
   if (error) {
-    return { success: false, error: "Password non valida" };
+    return { success: false, error: "Invalid password" };
   }
   const userData=await userRepository.findById(data.user.id)
 
   if (!userData || userData.role !== "manager") {
     await supabase.auth.signOut();
-    return { success: false, error: "Utente non autorizzato" };
+    return { success: false, error: "User not authorized" };
   }
 
   return { success: true };

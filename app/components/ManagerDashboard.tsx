@@ -61,7 +61,7 @@ export default function ManagerDashboard() {
           </div>
           <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
             {isLoadingWorkers ? (
-              <div className="text-center text-slate-400">Caricamento...</div>
+              <div className="text-center text-slate-400">Loading...</div>
             ) : (
               workers.map((worker) => (
                 <button
@@ -91,22 +91,22 @@ export default function ManagerDashboard() {
             <h2 className="font-semibold text-slate-100 flex items-center gap-2">
               <Factory className="h-4 w-4 text-sky-400" aria-hidden="true" />
               {selectedWorker
-                ? `Conversazioni di ${selectedWorker.name}`
-                : "Conversazioni"}
+                ? `Conversations of ${selectedWorker.name}`
+                : "Conversations"}
             </h2>
           </div>
           <div className="flex-1 overflow-y-auto">
             {!selectedWorker ? (
               <div className="p-4 text-center text-slate-400 text-sm">
-                Seleziona un worker
+                Select a worker
               </div>
             ) : isLoadingConversations ? (
               <div className="p-4 text-center text-slate-400">
-                Caricamento...
+                Loading...
               </div>
             ) : conversations.length === 0 ? (
               <div className="p-4 text-center text-slate-400 text-sm">
-                Nessuna conversazione
+                No conversations
               </div>
             ) : (
               conversations.map((conv) => (
@@ -138,9 +138,9 @@ export default function ManagerDashboard() {
               <div className="text-center">
                 <div className="flex items-center justify-center gap-2 text-slate-300 mb-2">
                   <MessageSquare className="h-5 w-5 text-sky-400" aria-hidden="true" />
-                  <p className="text-lg text-slate-200">Nessuna chat selezionata</p>
+                  <p className="text-lg text-slate-200">No chat selected</p>
                 </div>
-                <p className="text-sm">Seleziona una conversazione</p>
+                <p className="text-sm">Select a conversation</p>
               </div>
             </div>
           ) : isLoadingMessages ? (

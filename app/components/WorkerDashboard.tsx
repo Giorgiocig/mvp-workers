@@ -57,7 +57,7 @@ export default function WorkerDashboard({ user }: { user: User }) {
   ) => {
     e.stopPropagation(); // Prevent selecting the conversation
 
-    if (!confirm("Sei sicuro di voler eliminare questa conversazione?")) {
+    if (!confirm("Are you sure you want to delete this conversation?")) {
       return;
     }
 
@@ -72,7 +72,7 @@ export default function WorkerDashboard({ user }: { user: User }) {
       // Reload conversations list
       await loadConversations();
     } else {
-      alert(result.error || "Errore durante l'eliminazione");
+      alert(result.error || "Error while deleting the conversation");
     }
   };
 
@@ -114,7 +114,7 @@ export default function WorkerDashboard({ user }: { user: User }) {
             >
               <span className="inline-flex items-center justify-center gap-2">
                 <Plus className="h-4 w-4 text-amber-300" aria-hidden="true" />
-                {isCreating ? "Creazione..." : "Nuova Conversazione"}
+                {isCreating ? "Creating..." : "New conversation"}
               </span>
             </button>
           </div>
@@ -122,12 +122,12 @@ export default function WorkerDashboard({ user }: { user: User }) {
           <div className="flex-1 overflow-y-auto">
             {isLoadingConversations ? (
               <div className="p-4 text-center text-slate-400">
-                Caricamento...
+                Loading...
               </div>
             ) : conversations.length === 0 ? (
               <div className="p-4 text-center text-slate-400">
-                <p className="text-sm text-slate-300">Nessuna conversazione</p>
-                <p className="text-xs mt-1">Crea la tua prima chat</p>
+                <p className="text-sm text-slate-300">No conversations yet</p>
+                <p className="text-xs mt-1">Create your first chat</p>
               </div>
             ) : (
               conversations.map((conv) => (
@@ -155,7 +155,7 @@ export default function WorkerDashboard({ user }: { user: User }) {
                   <button
                     onClick={(e) => handleDeleteConversation(conv.id, e)}
                     className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
-                    title="Elimina conversazione"
+                    title="Delete conversation"
                   >
                     <Trash2 className="h-4 w-4" aria-hidden="true" />
                   </button>
@@ -185,9 +185,9 @@ export default function WorkerDashboard({ user }: { user: User }) {
               <div className="text-center">
                 <div className="flex items-center justify-center gap-2 text-slate-300 mb-2">
                   <MessageSquare className="h-5 w-5 text-sky-400" aria-hidden="true" />
-                  <p className="text-lg text-slate-200">Nessuna chat selezionata</p>
+                  <p className="text-lg text-slate-200">No chat selected</p>
                 </div>
-                <p className="text-sm">Seleziona o crea una conversazione</p>
+                <p className="text-sm">Select or create a conversation</p>
               </div>
             </div>
           )}

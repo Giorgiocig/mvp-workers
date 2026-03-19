@@ -23,7 +23,7 @@ export async function POST(req: Request) {
       }
     }
 
-    if (!userId) return new Response("Non autenticato", { status: 401 });
+    if (!userId) return new Response("Not authenticated", { status: 401 });
 
     const {
       messages,
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     }: { messages: UIMessage[]; conversationId: string } = await req.json();
 
     if (!conversationId)
-      return new Response("conversationId richiesto", { status: 400 });
+      return new Response("conversationId is required", { status: 400 });
 
     const supabase = await createSupabaseServerClient();
     const { data: conversation, error: convError } = await supabase
@@ -41,13 +41,14 @@ export async function POST(req: Request) {
       .single();
 
     if (convError || !conversation || conversation.user_id !== userId) {
-      return new Response("Conversazione non trovata", { status: 404 });
+      return new Response("Conversation not found", { status: 404 });
     }
 
     const result = streamText({
       model: openai("gpt-4o-mini"),
       messages: await convertToModelMessages(messages),
-      system: `Sei un assistente AI per workers...`,
+      system: `You are an AI assistant that helps factory workers and managers with production, safety, maintenance, and quality questions. 
+       answer in clear, professional English, and keep responses concise and actionable.`,
       onFinish: async ({ response }) => {
         const lastUserMessage = messages[messages.length - 1];
 
@@ -64,6 +65,6 @@ export async function POST(req: Request) {
     return result.toUIMessageStreamResponse();
   } catch (error) {
     console.error("Chat API error:", error);
-    return new Response("Errore del server", { status: 500 });
+    return new Response("Server error", { status: 500 });
   }
 }

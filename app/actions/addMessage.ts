@@ -14,13 +14,13 @@ export async function addMessage(
 
   const conversation = await conversationRepository.findById(conversationId);
   if (!conversation || conversation.user_id !== user.id) {
-    return { success: false, error: "Conversazione non trovata" };
+    return { success: false, error: "Conversation not found" };
   }
 
   try {
     const message = await messageRepository.create(conversationId, role, parts);
     return { success: true, message };
   } catch (e) {
-    return { success: false, error: "Errore durante l'invio del messaggio" };
+    return { success: false, error: "Error while sending the message" };
   }
 }

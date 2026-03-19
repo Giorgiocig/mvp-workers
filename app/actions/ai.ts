@@ -19,14 +19,9 @@ export async function generateConversationTitle(
   try {
     const { text } = await generateText({
       model: openai("gpt-4o-mini"),
-      prompt: `Generate a short, descriptive title (max 5 words) in Italian for a conversation that starts with: "${firstMessage}". 
+      prompt: `Generate a short, descriptive title (max 5 words) in English for a manufacturing conversation that starts with: "${firstMessage}". 
       
-Return ONLY the title, no quotes, no extra text. Keep it professional and relevant to manufacturing/production context.
-
-Examples:
-- User: "Come funziona il tornio CNC?" → Title: "Guida tornio CNC"
-- User: "Ho un problema con la pressa" → Title: "Problema pressa idraulica"
-- User: "Quali sono le procedure di sicurezza?" → Title: "Procedure di sicurezza"`,
+Return ONLY the title, no quotes, no extra text. Keep it professional and relevant to a factory/production context.`,
     });
 
     const title = text.trim();
@@ -43,7 +38,7 @@ Examples:
     console.error("Error generating title:", error);
     return {
       success: false,
-      error: "Errore durante la generazione del titolo",
+      error: "Error while generating the title",
     };
   }
 }

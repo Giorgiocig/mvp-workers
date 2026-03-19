@@ -12,7 +12,7 @@ export default function Navbar() {
             <Factory className="h-5 w-5 text-amber-400" aria-hidden="true" />
           </div>
           <div className="leading-tight">
-            <div className="text-sm text-slate-300">Sarajevo</div>
+            <div className="text-sm text-slate-300">Roma</div>
             <div className="text-lg font-semibold tracking-tight text-slate-100">
               Production System
             </div>
