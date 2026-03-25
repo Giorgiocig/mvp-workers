@@ -49,7 +49,8 @@ export async function POST(req: Request) {
       messages: await convertToModelMessages(messages),
       system: `You are an AI assistant that helps factory workers and managers with production, safety, maintenance, and quality questions. 
        answer in clear, professional English, and keep responses concise and actionable.`,
-      onFinish: async ({ response }) => {
+      onFinish: async ({ response, usage }) => {
+        // save message
         const lastUserMessage = messages[messages.length - 1];
 
         for (const msg of [lastUserMessage, ...response.messages]) {
@@ -59,6 +60,23 @@ export async function POST(req: Request) {
             parts: msg.parts ?? msg.content,
           });
         }
+        // stats
+        const inputCost = usage.inputTokens
+          ? (usage.inputTokens / 1_000_000) * 0.15
+          : 0;
+        const outputCost = usage.outputTokens
+          ? (usage.outputTokens / 1_000_000) * 0.6
+          : 0;
+        const totalCost = inputCost + outputCost;
+        await supabase.from("api_usage").insert({
+          user_id: userId,
+          conversation_id: conversationId,
+          model: "gpt-4o-mini",
+          prompt_tokens: usage.inputTokens,
+          completion_tokens: usage.outputTokens,
+          total_tokens: usage.totalTokens,
+          cost_usd: totalCost,
+        });
       },
     });
 
