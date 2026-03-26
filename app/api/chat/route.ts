@@ -57,7 +57,12 @@ export async function POST(req: Request) {
           await supabase.from("messages").insert({
             conversation_id: conversationId,
             role: msg.role,
-            parts: msg.parts ?? msg.content,
+            parts:
+              "parts" in msg
+                ? msg.parts
+                : "content" in msg
+                  ? msg.content
+                  : null,
           });
         }
         // stats
