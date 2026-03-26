@@ -1,4 +1,5 @@
 # 🏭 Factory AI Assistant
+
 An AI-powered chat application for manufacturing workers and managers built with Next.js, Supabase, and the Vercel AI SDK. Workers can chat with an AI assistant for help with daily tasks, production procedures, and technical problem-solving. Managers can monitor all worker conversations from a dedicated dashboard.
 
 # Features
@@ -9,7 +10,6 @@ Conversation persistence — chat history saved to Supabase and restored on relo
 Auto-generated titles — conversation titles generated automatically from the first message
 Role-based access — workers can only see their own chats, managers can see everything
 
-
 # Tech Stack
 
 Next.js 14 (App Router)
@@ -18,14 +18,14 @@ Vercel AI SDK — streaming chat with useChat
 OpenAI GPT-4o mini — language model
 TypeScript, Tailwind CSS
 
-
 # How to Use
+
 ## Workers
 
 Go to /login
 Select your name from the list — no password required
 You will be redirected to your personal dashboard
-Create a new conversation with the ➕ Nuova Conversazione button
+Create a new conversation with the ➕ New conversation button
 Chat with the AI assistant about tasks, procedures, or technical questions
 Your conversations are saved automatically and persist across sessions
 
@@ -35,28 +35,28 @@ Go to /login
 Password: admin
 Click "Sign in as manager"
 
-
 You will be redirected to the manager dashboard
 Click on a worker card to see their conversations
 Click on a conversation to read the full chat history (read-only)
 
-
 # Project Structure
+
 app/
-  actions/          # Server actions (business logic)
-  components/       # React components
-  worker/           # Worker pages
-  manager/          # Manager pages
+actions/ # Server actions (business logic)
+components/ # React components
+worker/ # Worker pages
+manager/ # Manager pages
 lib/
-  repositories/     # Database access layer
-    conversationRepository.ts
-    messageRepository.ts
-    userRepository.ts
-  guards.ts         # Role-based auth helpers
-  types.ts          # Shared TypeScript types
-  supabaseServer.ts # Supabase client
+repositories/ # Database access layer
+conversationRepository.ts
+messageRepository.ts
+userRepository.ts
+guards.ts # Role-based auth helpers
+types.ts # Shared TypeScript types
+supabaseServer.ts # Supabase client
 
 # Architecture Notes
+
 The project follows a layered architecture:
 
 Repositories (lib/repositories/) — all direct Supabase queries live here
