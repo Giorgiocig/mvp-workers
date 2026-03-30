@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
+import { SYSTEM_PROMPT } from "@/lib/utilities/prompt";
 import { openai } from "@ai-sdk/openai";
 import { convertToModelMessages, streamText, UIMessage } from "ai";
 import { cookies } from "next/headers";
@@ -47,8 +48,7 @@ export async function POST(req: Request) {
     const result = streamText({
       model: openai("gpt-4o-mini"),
       messages: await convertToModelMessages(messages),
-      system: `You are an AI assistant that helps factory workers and managers with production, safety, maintenance, and quality questions. 
-       answer in clear, professional English, and keep responses concise and actionable.`,
+      system: SYSTEM_PROMPT,
       onFinish: async ({ response, usage }) => {
         // save message
         const lastUserMessage = messages[messages.length - 1];
