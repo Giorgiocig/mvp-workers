@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
-import WorkerDashboard from "@/app/components/WorkerDashboard";
 import { requireWorker } from "@/lib/guards";
+import WorkerPageClient from "./page-client";
 
 export default async function WorkerPersonalPage({
   params,
@@ -12,5 +12,5 @@ export default async function WorkerPersonalPage({
   const { workerId } = await params;
   if (user.id !== workerId) redirect(`/worker/${user.id}`);
 
-  return <WorkerDashboard user={user} />;
+  return <WorkerPageClient user={user} />;
 }

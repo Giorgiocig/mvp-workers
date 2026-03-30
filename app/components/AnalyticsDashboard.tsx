@@ -21,6 +21,13 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/lib/components/card";
+import { Spinner } from "@/lib/components/spinner";
 
 export default function AnalyticsDashboard() {
   const [stats, setStats] = useState<UsageStats | null>(null);
@@ -50,157 +57,209 @@ export default function AnalyticsDashboard() {
   if (loading) {
     return (
       <div className="p-8">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-200 rounded w-1/4"></div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-32 bg-gray-200 rounded"></div>
-            ))}
-          </div>
+        <div className="flex justify-center items-center py-12">
+          <Spinner />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
-          📊 Analytics Dashboard
-        </h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-100">
+            📊 API Analytics
+          </h1>
+          <p className="text-slate-400 text-sm mt-2">
+            Monitor API usage and costs
+          </p>
+        </div>
 
         <select
           value={days}
           onChange={(e) => setDays(Number(e.target.value))}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-400/50"
         >
-          <option value={7}>Last 7 days</option>
-          <option value={30}>Last 30 days</option>
-          <option value={90}>Last 90 days</option>
+          <option value={7} className="bg-slate-900">
+            Last 7 days
+          </option>
+          <option value={30} className="bg-slate-900">
+            Last 30 days
+          </option>
+          <option value={90} className="bg-slate-900">
+            Last 90 days
+          </option>
         </select>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="text-sm text-gray-600 mb-1">Total cost</div>
-          <div className="text-3xl font-bold text-blue-600">
-            ${stats?.total_cost.toFixed(4)}
-          </div>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-slate-400 text-sm mb-2">Total Cost</div>
+            <div className="text-3xl font-bold text-amber-400">
+              ${stats?.total_cost.toFixed(4)}
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="text-sm text-gray-600 mb-1">Total tokens</div>
-          <div className="text-3xl font-bold text-green-600">
-            {stats?.total_tokens.toLocaleString()}
-          </div>
-        </div>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-slate-400 text-sm mb-2">Total Tokens</div>
+            <div className="text-3xl font-bold text-sky-400">
+              {stats?.total_tokens.toLocaleString()}
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="text-sm text-gray-600 mb-1">Api calls</div>
-          <div className="text-3xl font-bold text-purple-600">
-            {stats?.total_calls}
-          </div>
-        </div>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-slate-400 text-sm mb-2">API Calls</div>
+            <div className="text-3xl font-bold text-emerald-400">
+              {stats?.total_calls}
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="text-sm text-gray-600 mb-1">
-            average Token/api call
-          </div>
-          <div className="text-3xl font-bold text-orange-600">
-            {stats?.avg_tokens_per_call}
-          </div>
-        </div>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-slate-400 text-sm mb-2">Avg Tokens/Call</div>
+            <div className="text-3xl font-bold text-violet-400">
+              {stats?.avg_tokens_per_call}
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Daily Usage Chart */}
-      <div className="bg-white rounded-lg shadow p-6 mb-8">
-        <h2 className="text-xl font-semibold mb-4">Daily usage</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={dailyData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis yAxisId="left" />
-            <YAxis yAxisId="right" orientation="right" />
-            <Tooltip />
-            <Legend />
-            <Line
-              yAxisId="left"
-              type="monotone"
-              dataKey="total_tokens"
-              stroke="#8884d8"
-              name="Token"
-            />
-            <Line
-              yAxisId="right"
-              type="monotone"
-              dataKey="total_cost"
-              stroke="#82ca9d"
-              name="Costo ($)"
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Daily Usage</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="w-full h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={dailyData}>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="rgba(255,255,255,0.1)"
+                />
+                <XAxis dataKey="date" stroke="rgba(255,255,255,0.5)" />
+                <YAxis yAxisId="left" stroke="rgba(255,255,255,0.5)" />
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  stroke="rgba(255,255,255,0.5)"
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "rgba(15, 23, 42, 0.9)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                  }}
+                  labelStyle={{ color: "#e5e7eb" }}
+                />
+                <Legend />
+                <Line
+                  yAxisId="left"
+                  type="monotone"
+                  dataKey="total_tokens"
+                  stroke="#38bdf8"
+                  name="Tokens"
+                  dot={false}
+                />
+                <Line
+                  yAxisId="right"
+                  type="monotone"
+                  dataKey="total_cost"
+                  stroke="#fbbf24"
+                  name="Cost ($)"
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* User Usage Chart */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-semibold mb-4">Workers Usage</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={userData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="user_name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="total_tokens" fill="#8884d8" name="Token" />
-            <Bar dataKey="total_cost" fill="#82ca9d" name="Costo ($)" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Worker Usage</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="w-full h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={userData}>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="rgba(255,255,255,0.1)"
+                />
+                <XAxis dataKey="user_name" stroke="rgba(255,255,255,0.5)" />
+                <YAxis stroke="rgba(255,255,255,0.5)" />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "rgba(15, 23, 42, 0.9)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                  }}
+                  labelStyle={{ color: "#e5e7eb" }}
+                />
+                <Legend />
+                <Bar dataKey="total_tokens" fill="#38bdf8" name="Tokens" />
+                <Bar dataKey="total_cost" fill="#fbbf24" name="Cost ($)" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* User Table */}
-      <div className="bg-white rounded-lg shadow p-6 mt-8">
-        <h2 className="text-xl font-semibold mb-4">Detail workers</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                  Worker
-                </th>
-                <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">
-                  Calls
-                </th>
-                <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">
-                  Token
-                </th>
-                <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">
-                  Costs
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {userData.map((user, idx) => (
-                <tr key={idx} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm text-gray-900">
-                    {user.user_name}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-600 text-right">
-                    {user.api_calls}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-600 text-right">
-                    {user.total_tokens.toLocaleString()}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-900 text-right font-semibold">
-                    ${user.total_cost.toFixed(4)}
-                  </td>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Worker Details</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-white/10 bg-white/5">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-200">
+                    Worker
+                  </th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold text-slate-200">
+                    Calls
+                  </th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold text-slate-200">
+                    Tokens
+                  </th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold text-slate-200">
+                    Cost
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+              </thead>
+              <tbody className="divide-y divide-white/10">
+                {userData.map((user, idx) => (
+                  <tr key={idx} className="hover:bg-white/5 transition-colors">
+                    <td className="px-6 py-4 text-sm text-slate-300">
+                      {user.user_name}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-slate-400 text-right">
+                      {user.api_calls}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-slate-400 text-right">
+                      {user.total_tokens.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-amber-400 text-right font-semibold">
+                      ${user.total_cost.toFixed(4)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -1,5 +1,7 @@
-import AnalyticsDashboard from "@/app/components/AnalyticsDashboard";
+import { requireManager } from "@/lib/guards";
+import AnalyticsPageClient from "./page-client";
 
 export default async function AnalyticsPage() {
-  return <AnalyticsDashboard />;
+  await requireManager();
+  return <AnalyticsPageClient />;
 }

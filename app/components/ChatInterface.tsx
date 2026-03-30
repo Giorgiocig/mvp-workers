@@ -4,7 +4,9 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, UIMessage } from "ai";
 
 import { useState } from "react";
-import { Bot, Send, Square, User as UserIcon } from "lucide-react";
+import { Bot, Send, Square, User as UserIcon, MessageSquare } from "lucide-react";
+import { Button } from "@/lib/components/button";
+import { Input } from "@/lib/components/input";
 import { generateConversationTitle } from "../actions/ai";
 
 export default function ChatInterface({
@@ -54,14 +56,24 @@ export default function ChatInterface({
   const isBusy = status === "submitted" || status === "streaming";
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col p-6">
       {error && (
-        <div className="mb-3 rounded-lg bg-red-500/10 border border-red-500/40 px-3 py-2 text-sm text-red-200">
-          {error.message}
+        <div className="mb-4 rounded-lg bg-red-500/10 border border-red-500/40 px-4 py-3 text-sm text-red-200">
+          <p className="font-medium">Error</p>
+          <p>{error.message}</p>
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+      <div className="flex-1 overflow-y-auto space-y-4 mb-6">
+        {messages.length === 0 && !isBusy && (
+          <div className="h-full flex items-center justify-center text-slate-400">
+            <div className="text-center">
+              <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-30" />
+              <p className="text-sm">Start a conversation</p>
+            </div>
+          </div>
+        )}
+        
         {messages.map((message) => {
           const isUser = message.role === "user";
 
@@ -71,13 +83,13 @@ export default function ChatInterface({
               className={`flex w-full ${isUser ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-[75%] flex gap-3 ${
+                className={`max-w-[85%] flex gap-3 ${
                   isUser ? "flex-row-reverse" : "flex-row"
                 }`}
               >
                 <div
-                  className={`mt-0.5 flex h-8 w-8 items-center justify-center rounded-full ${
-                    isUser ? "bg-amber-500/20 border border-amber-400/40" : "bg-sky-500/15 border border-sky-400/40"
+                  className={`mt-1 flex h-8 w-8 items-center justify-center rounded-full shrink-0 ${
+                    isUser ? "bg-amber-500/20 border border-amber-400/40" : "bg-sky-500/20 border border-sky-400/40"
                   }`}
                 >
                   {isUser ? (
@@ -88,22 +100,19 @@ export default function ChatInterface({
                 </div>
 
                 <div
-                  className={`rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
+                  className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                     isUser
-                      ? "bg-amber-500/20 border border-amber-400/30 text-slate-100"
-                      : "bg-white/5 border border-white/15 text-slate-100"
+                      ? "bg-amber-500/15 border border-amber-400/30 text-slate-100"
+                      : "bg-white/5 border border-white/10 text-slate-100"
                   }`}
                 >
-                  <div className="mb-1 text-xs font-semibold uppercase tracking-wide opacity-70">
-                    {isUser ? "Worker" : "Assistant"}
-                  </div>
                   {message.parts.map((part, index) => {
                     switch (part.type) {
                       case "text":
                         return (
                           <div
                             key={`${message.id}-${index}`}
-                            className="whitespace-pre-wrap"
+                            className="whitespace-pre-wrap wrap-break-word"
                           >
                             {part.text}
                           </div>
@@ -120,28 +129,27 @@ export default function ChatInterface({
 
         {isBusy && (
           <div className="flex items-center gap-2 text-slate-400 text-sm">
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-sky-400" />
-            Thinking...
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-sky-400/20 border-t-sky-400" />
+            <span>Thinking...</span>
           </div>
         )}
       </div>
 
       <form
         onSubmit={handleSubmit}
-        className="mt-4 rounded-2xl surface border border-white/10 px-3 py-2"
+        className="rounded-lg border border-white/10 bg-white/5 backdrop-blur p-4"
       >
-        <div className="flex items-end gap-2">
+        <div className="flex items-end gap-3">
           <textarea
-            className="flex-1 resize-none bg-transparent px-2 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-0"
+            className="flex-1 resize-none bg-transparent text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-0 max-h-24"
             rows={1}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Write a message to the assistant..."
+            placeholder="Write a message..."
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
-                if (!isBusy) {
-                  // simulate submit
+                if (!isBusy && input.trim()) {
                   (e.currentTarget.form as HTMLFormElement | null)?.requestSubmit();
                 }
               }
@@ -149,23 +157,24 @@ export default function ChatInterface({
           />
 
           {isBusy ? (
-            <button
+            <Button
               type="button"
               onClick={stop}
-              className="inline-flex items-center justify-center rounded-xl border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs font-medium text-red-100 hover:bg-red-500/20 transition-colors"
+              variant="destructive"
+              size="sm"
             >
-              <Square className="mr-1 h-3 w-3" aria-hidden="true" />
+              <Square className="h-3 w-3 mr-1" />
               Stop
-            </button>
+            </Button>
           ) : (
-            <button
+            <Button
               type="submit"
-              className="inline-flex items-center justify-center rounded-xl border border-sky-400/40 bg-sky-500/20 px-3 py-2 text-xs font-medium text-sky-100 hover:bg-sky-500/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              size="sm"
               disabled={status !== "ready" || !input.trim()}
             >
-              <Send className="mr-1 h-3 w-3" aria-hidden="true" />
+              <Send className="h-3 w-3 mr-1" />
               Send
-            </button>
+            </Button>
           )}
         </div>
       </form>

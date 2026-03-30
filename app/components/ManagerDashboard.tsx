@@ -7,6 +7,13 @@ import { Conversation } from "@/lib/utilities/interfaces";
 import { getWorkerConversations } from "../actions/getConversationForSpecificUser";
 import { getAllWorkers } from "../actions/getAllWorkers";
 import { getMessages } from "../actions/getMessages";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/lib/components/card";
+import { Spinner } from "@/lib/components/spinner";
 
 export default function ManagerDashboard() {
   const [workers, setWorkers] = useState<{ id: string; name: string }[]>([]);
@@ -49,119 +56,138 @@ export default function ManagerDashboard() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex flex-col">
-      <div className="flex-1 flex max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 gap-4">
-        {/* Colonna 1 - Workers */}
-        <div className="w-72 surface rounded-2xl overflow-hidden flex flex-col">
-          <div className="p-4 border-b border-white/10">
-            <h2 className="font-semibold text-slate-100 flex items-center gap-2">
-              <HardHat className="h-4 w-4 text-amber-400" aria-hidden="true" />
-              Workers
-            </h2>
-          </div>
-          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
-            {isLoadingWorkers ? (
-              <div className="text-center text-slate-400">Loading...</div>
-            ) : (
-              workers.map((worker) => (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+      {/* Workers Column */}
+      <Card className="lg:col-span-1">
+        <CardHeader className="border-b border-white/10">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <HardHat className="h-5 w-5 text-amber-400" aria-hidden="true" />
+            Workers
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0 max-h-125 overflow-y-auto">
+          {isLoadingWorkers ? (
+            <div className="flex justify-center items-center py-8">
+              <Spinner />
+            </div>
+          ) : workers.length === 0 ? (
+            <div className="p-4 text-center text-slate-400 text-sm">
+              No workers found
+            </div>
+          ) : (
+            <div className="space-y-2 p-4">
+              {workers.map((worker) => (
                 <button
                   key={worker.id}
                   onClick={() => handleSelectWorker(worker)}
-                  className={`w-full p-4 rounded-xl border text-left transition-all surface hover:bg-white/10 ${
+                  className={`w-full p-3 rounded-lg text-left transition-all border ${
                     selectedWorker?.id === worker.id
-                      ? "border-amber-400/60 bg-white/10"
-                      : "border-white/10"
+                      ? "border-amber-400/60 bg-amber-400/10 text-amber-100"
+                      : "border-white/10 hover:bg-white/5 text-slate-300"
                   }`}
                 >
-                  <div className="mb-2">
-                    <User className="h-7 w-7 text-slate-300" aria-hidden="true" />
-                  </div>
-                  <div className="font-semibold text-slate-100">
-                    {worker.name}
+                  <div className="flex items-center gap-3">
+                    <User className="h-5 w-5 shrink-0" aria-hidden="true" />
+                    <span className="font-medium truncate">{worker.name}</span>
                   </div>
                 </button>
-              ))
-            )}
-          </div>
-        </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-        {/* Colonna 2 - Conversazioni del worker selezionato */}
-        <div className="w-72 surface rounded-2xl overflow-hidden flex flex-col">
-          <div className="p-4 border-b border-white/10">
-            <h2 className="font-semibold text-slate-100 flex items-center gap-2">
-              <Factory className="h-4 w-4 text-sky-400" aria-hidden="true" />
+      {/* Conversations Column */}
+      <Card className="lg:col-span-1">
+        <CardHeader className="border-b border-white/10">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Factory className="h-5 w-5 text-sky-400" aria-hidden="true" />
+            <span className="truncate">
               {selectedWorker
-                ? `Conversations of ${selectedWorker.name}`
+                ? `${selectedWorker.name}'s Chats`
                 : "Conversations"}
-            </h2>
-          </div>
-          <div className="flex-1 overflow-y-auto">
-            {!selectedWorker ? (
-              <div className="p-4 text-center text-slate-400 text-sm">
-                Select a worker
-              </div>
-            ) : isLoadingConversations ? (
-              <div className="p-4 text-center text-slate-400">
-                Loading...
-              </div>
-            ) : conversations.length === 0 ? (
-              <div className="p-4 text-center text-slate-400 text-sm">
-                No conversations
-              </div>
-            ) : (
-              conversations.map((conv) => (
+            </span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0 max-h-125 overflow-y-auto">
+          {!selectedWorker ? (
+            <div className="p-4 text-center text-slate-400 text-sm">
+              Select a worker to view conversations
+            </div>
+          ) : isLoadingConversations ? (
+            <div className="flex justify-center items-center py-8">
+              <Spinner />
+            </div>
+          ) : conversations.length === 0 ? (
+            <div className="p-4 text-center text-slate-400 text-sm">
+              No conversations yet
+            </div>
+          ) : (
+            <div className="space-y-1 p-4">
+              {conversations.map((conv) => (
                 <button
                   key={conv.id}
                   onClick={() => handleSelectConversation(conv.id)}
-                  className={`w-full text-left px-4 py-3 border-b border-white/10 hover:bg-white/10 transition-colors ${
+                  className={`w-full text-left p-3 rounded-lg transition-colors border ${
                     selectedConversation === conv.id
-                      ? "bg-white/10 border-l-4 border-l-amber-400"
-                      : ""
+                      ? "border-amber-400/40 bg-amber-400/10"
+                      : "border-white/10 hover:bg-white/5"
                   }`}
                 >
-                  <div className="font-medium text-slate-100 truncate">
-                    {conv.title}
+                  <div className="font-medium text-slate-100 truncate text-sm">
+                    {conv.title || "Untitled"}
                   </div>
                   <div className="text-xs text-slate-400 mt-1">
-                    {new Date(conv.updated_at).toLocaleDateString("it-IT")}
+                    {new Date(conv.updated_at).toLocaleDateString()}
                   </div>
                 </button>
-              ))
-            )}
-          </div>
-        </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-        {/* Colonna 3 - Messaggi */}
-        <div className="flex-1 surface rounded-2xl overflow-hidden flex flex-col">
+      {/* Messages Column */}
+      <Card className="lg:col-span-1">
+        <CardHeader className="border-b border-white/10">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <MessageSquare
+              className="h-5 w-5 text-sky-400"
+              aria-hidden="true"
+            />
+            Messages
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0 max-h-125 overflow-y-auto">
           {!selectedConversation ? (
-            <div className="flex-1 flex items-center justify-center text-slate-400">
+            <div className="flex items-center justify-center h-64 text-slate-400">
               <div className="text-center">
-                <div className="flex items-center justify-center gap-2 text-slate-300 mb-2">
-                  <MessageSquare className="h-5 w-5 text-sky-400" aria-hidden="true" />
-                  <p className="text-lg text-slate-200">No chat selected</p>
-                </div>
+                <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
                 <p className="text-sm">Select a conversation</p>
               </div>
             </div>
           ) : isLoadingMessages ? (
-            <div className="flex-1 flex items-center justify-center">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-amber-400" />
+            <div className="flex justify-center items-center h-64">
+              <Spinner />
+            </div>
+          ) : messages.length === 0 ? (
+            <div className="flex items-center justify-center h-64 text-slate-400">
+              <p className="text-sm">No messages</p>
             </div>
           ) : (
-            <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-4">
+            <div className="space-y-3 p-4">
               {messages.map((msg) => (
                 <div
                   key={msg.id}
                   className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[70%] px-4 py-3 rounded-2xl text-sm ${
+                    className={`max-w-[90%] px-4 py-2 rounded-lg text-sm ${
                       msg.role === "user"
-                        ? "bg-amber-500/20 text-slate-100 border border-amber-400/20"
+                        ? "bg-amber-500/20 text-slate-100 border border-amber-400/30"
                         : "bg-white/5 text-slate-100 border border-white/10"
                     }`}
                   >
-                    {/* gestisci sia parts (nuovo formato) che content (vecchio) */}
                     {msg.parts
                       ? msg.parts
                           .filter((p) => p.type === "text")
@@ -173,8 +199,8 @@ export default function ManagerDashboard() {
               ))}
             </div>
           )}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

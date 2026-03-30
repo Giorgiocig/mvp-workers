@@ -4,7 +4,14 @@ import { useState, useEffect } from "react";
 import { HardHat, MessageSquare, Plus, Trash2 } from "lucide-react";
 
 import ChatInterface from "@/app/components/ChatInterface";
-
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/lib/components/card";
+import { Button } from "@/lib/components/button";
+import { Spinner } from "@/lib/components/spinner";
 
 import { Conversation, Message, User } from "@/lib/utilities/interfaces";
 import { getConversations } from "../actions/getConversations";
@@ -87,42 +94,30 @@ export default function WorkerDashboard({ user }: { user: User }) {
   }, [activeConversation]);
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex flex-col">
-      {/* Main Content */}
-      <div className="flex-1 flex max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 gap-4">
-        <div className="w-80 surface rounded-2xl overflow-hidden flex flex-col">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+      {/* Sidebar - Conversations List */}
+      <Card className="lg:col-span-1">
+        <CardHeader className="border-b border-white/10">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <HardHat className="h-5 w-5 text-amber-400" aria-hidden="true" />
+            <span className="truncate">{user.name}</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0 flex flex-col h-full">
           <div className="p-4 border-b border-white/10">
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0">
-                <h1 className="text-lg font-semibold text-slate-100 flex items-center gap-2 truncate">
-                  <HardHat className="h-5 w-5 text-amber-400" aria-hidden="true" />
-                  {user.name}
-                </h1>
-                <p className="text-xs text-slate-400">Worker Dashboard</p>
-              </div>
-              <div className="h-9 w-9 rounded-xl surface-strong flex items-center justify-center">
-                <HardHat className="h-4 w-4 text-slate-200" aria-hidden="true" />
-              </div>
-            </div>
-          </div>
-
-          <div className="p-4 border-b border-white/10">
-            <button
+            <Button
               onClick={handleCreateConversation}
               disabled={isCreating}
-              className="w-full px-4 py-3 rounded-xl font-semibold transition-colors disabled:opacity-50 bg-amber-500/20 hover:bg-amber-500/30 text-slate-100 border border-amber-400/20"
+              className="w-full"
             >
-              <span className="inline-flex items-center justify-center gap-2">
-                <Plus className="h-4 w-4 text-amber-300" aria-hidden="true" />
-                {isCreating ? "Creating..." : "New conversation"}
-              </span>
-            </button>
+              <Plus className="h-4 w-4 mr-2" />
+              {isCreating ? "Creating..." : "New chat"}
+            </Button>
           </div>
-
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto max-h-125">
             {isLoadingConversations ? (
-              <div className="p-4 text-center text-slate-400">
-                Loading...
+              <div className="flex justify-center items-center py-8">
+                <Spinner />
               </div>
             ) : conversations.length === 0 ? (
               <div className="p-4 text-center text-slate-400">
@@ -130,47 +125,60 @@ export default function WorkerDashboard({ user }: { user: User }) {
                 <p className="text-xs mt-1">Create your first chat</p>
               </div>
             ) : (
-              conversations.map((conv) => (
-                <div
-                  key={conv.id}
-                  className={`relative group flex items-center border-b border-white/10 hover:bg-white/10 transition-colors ${
-                    activeConversation === conv.id
-                      ? "bg-white/10 border-l-4 border-l-amber-400"
-                      : ""
-                  }`}
-                >
-                  <button
-                    onClick={() => setActiveConversation(conv.id)}
-                    className="flex-1 text-left px-4 py-3"
+              <div className="space-y-1 p-4">
+                {conversations.map((conv) => (
+                  <div
+                    key={conv.id}
+                    className="flex items-center group rounded-lg hover:bg-white/5 transition-colors"
                   >
-                    <div className="font-medium text-slate-100 truncate pr-8">
-                      {conv.title}
-                    </div>
-                    <div className="text-xs text-slate-400 mt-1">
-                      {new Date(conv.updated_at).toLocaleDateString("it-IT")}
-                    </div>
-                  </button>
+                    <button
+                      onClick={() => setActiveConversation(conv.id)}
+                      className={`flex-1 text-left px-3 py-3 rounded-lg transition-colors ${
+                        activeConversation === conv.id
+                          ? "bg-amber-400/10 text-amber-100"
+                          : "text-slate-300"
+                      }`}
+                    >
+                      <div className="font-medium truncate text-sm">
+                        {conv.title || "Untitled"}
+                      </div>
+                      <div className="text-xs text-slate-400 mt-1">
+                        {new Date(conv.updated_at).toLocaleDateString()}
+                      </div>
+                    </button>
 
-                  {/* Delete Button */}
-                  <button
-                    onClick={(e) => handleDeleteConversation(conv.id, e)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
-                    title="Delete conversation"
-                  >
-                    <Trash2 className="h-4 w-4" aria-hidden="true" />
-                  </button>
-                </div>
-              ))
+                    {/* Delete Button */}
+                    <button
+                      onClick={(e) => handleDeleteConversation(conv.id, e)}
+                      className="p-2 text-slate-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all mr-1"
+                      title="Delete conversation"
+                    >
+                      <Trash2 className="h-4 w-4" aria-hidden="true" />
+                    </button>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        {/* Chat Area */}
-        <div className="flex-1 surface rounded-2xl overflow-hidden flex flex-col">
+      {/* Main Chat Area */}
+      <Card className="lg:col-span-2">
+        <CardHeader className="border-b border-white/10">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <MessageSquare
+              className="h-5 w-5 text-sky-400"
+              aria-hidden="true"
+            />
+            Chat
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0 flex-1">
           {activeConversation ? (
             isLoadingMessages ? (
-              <div className="flex-1 flex items-center justify-center text-slate-400">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-amber-400" />
+              <div className="flex justify-center items-center h-96">
+                <Spinner />
               </div>
             ) : (
               <ChatInterface
@@ -181,18 +189,15 @@ export default function WorkerDashboard({ user }: { user: User }) {
               />
             )
           ) : (
-            <div className="flex-1 flex items-center justify-center text-slate-400">
+            <div className="flex items-center justify-center h-96 text-slate-400">
               <div className="text-center">
-                <div className="flex items-center justify-center gap-2 text-slate-300 mb-2">
-                  <MessageSquare className="h-5 w-5 text-sky-400" aria-hidden="true" />
-                  <p className="text-lg text-slate-200">No chat selected</p>
-                </div>
+                <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
                 <p className="text-sm">Select or create a conversation</p>
               </div>
             </div>
           )}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
